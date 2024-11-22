@@ -29,15 +29,14 @@ var (
 	to   = mail.NewEmail(myName, "matheuscscp@gmail.com")
 )
 
-func New() *Client {
-	var key string
-	b, err := os.ReadFile("key.txt")
-	if err == nil {
-		key = string(b)
-	} else {
-		key = os.Getenv("SENDGRID_API_KEY")
+func New() (*Client, error) {
+	if b, err := os.ReadFile("key.txt"); err == nil {
+		return &Client{sg.NewSendClient(string(b))}, nil
 	}
-	return &Client{sg.NewSendClient(key)}
+	if key := os.Getenv("SENDGRID_API_KEY"); key != "" {
+		return &Client{sg.NewSendClient(key)}, nil
+	}
+	return nil, errors.New("sendgrid api key not found")
 }
 
 func (c *Client) SendEmail(ctx context.Context, subject, plainTextContent, htmlContent string) error {

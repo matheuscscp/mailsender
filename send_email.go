@@ -15,7 +15,10 @@ import (
 func init() {
 	logrus.SetFormatter(&logrus.JSONFormatter{DisableTimestamp: true})
 
-	client := sendgrid.New()
+	client, err := sendgrid.New()
+	if err != nil {
+		logrus.WithError(err).Fatal("error creating sendgrid client")
+	}
 
 	functions.HTTP("SendEmail", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
