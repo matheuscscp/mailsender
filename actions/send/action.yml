@@ -1,0 +1,63 @@
+name: Send an email to myself
+description: A GitHub Action for my projects to send emails to myself.
+inputs:
+  caller:
+    description: An identification string for the sender.
+    required: true
+  subject:
+    description: Subject for the email.
+    required: true
+  text:
+    description: The plain text content of the email.
+    required: false
+  html:
+    description: The HTML content of the email.
+    required: false
+runs:
+  using: composite
+  steps:
+  - name: Compute OIDC Token
+    id: generate_token
+    uses: actions/github-script@v7
+    with:
+      script: |
+        // generate token and set output
+        const audience = 'mailsender'
+        const idToken = await core.getIDToken(audience)
+        core.setOutput('token', idToken)
+
+        // print claims
+        const payload = idToken.split('.')[1]
+        const decoded = Buffer.from(payload, 'base64').toString('utf8')
+        const claims = JSON.parse(decoded)
+        console.log('Claims:', JSON.stringify(claims, null, 2))
+
+  - name: Compute API Payload
+    id: compute_payload
+    uses: actions/github-script@v7
+    env:
+      subject: ${{ inputs.subject }}
+      text: ${{ inputs.text }}
+      html: ${{ inputs.html }}
+    with:
+      script: |
+        const payload = {
+          subject: process.env.subject,
+          plainTextContent: process.env.text,
+          htmlContent: process.env.html
+        }
+        core.setOutput('payload', JSON.stringify(payload))
+
+  - name: Call SendEmail API
+    shell: bash
+    env:
+      token: ${{ steps.generate_token.outputs.token }}
+      caller: ${{ inputs.caller }}
+      payload: ${{ steps.compute_payload.outputs.payload }}
+    run: |
+      curl -s -i --fail-with-body \
+        -H "Authorization: Bearer $token" \
+        -H "X-Caller: $caller" \
+        -H "Content-Type: application/json" \
+        -d "$payload" \
+        https://europe-west2-mail-sender-442416.cloudfunctions.net/send-email

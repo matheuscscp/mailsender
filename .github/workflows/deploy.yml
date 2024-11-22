@@ -43,3 +43,13 @@ jobs:
           --quiet << EOF
         Y
         EOF
+
+    - name: Test SendEmail Cloud Function
+      uses: matheuscscp/mailsender/actions/send@main
+      with:
+        caller: Test SendEmail Cloud Function
+        subject: New version ${{ github.sha }} of SendEmail Cloud Function deployed
+        text: |
+          A new version of the SendEmail Cloud Function was deployed:
+
+          https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}
