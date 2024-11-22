@@ -40,16 +40,6 @@ func New() *Client {
 	return &Client{sg.NewSendClient(key)}
 }
 
-func loadKey() (string, error) {
-	if key, ok := os.LookupEnv("SENDGRID_API_KEY"); ok && key != "" {
-		return key, nil
-	}
-	if b, err := os.ReadFile("key.txt"); err == nil {
-		return string(b), nil
-	}
-	return "", errors.New("sendgrid key not found")
-}
-
 func (c *Client) SendEmail(ctx context.Context, subject, plainTextContent, htmlContent string) error {
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 
