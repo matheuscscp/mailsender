@@ -4,11 +4,15 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: deploy-cloud-function
+  cancel-in-progress: false
+
 jobs:
   deploy-cloud-function:
     name: Deploy Cloud Function
-    concurrency: deploy-cloud-function
     runs-on: ubuntu-latest
+    environment: deploy
     permissions:
       contents: read
       id-token: write
