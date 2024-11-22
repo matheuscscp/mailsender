@@ -34,6 +34,7 @@ jobs:
           --region=europe-west2 \
           --source=. \
           --entry-point=SendEmail \
+          --service-account=send-email@mail-sender-442416.iam.gserviceaccount.com \
           --quiet << EOF
         Y
         EOF
