@@ -28,6 +28,7 @@ jobs:
     - name: Deploy Cloud Function
       run: |
         gcloud beta functions deploy send-email \
+          --log-http \
           --gen2 \
           --trigger-http \
           --runtime=go122 \
