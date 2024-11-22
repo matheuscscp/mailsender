@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,9 +19,18 @@ func init() {
 }
 
 func main() {
+	if len(os.Args) < 4 {
+		fmt.Fprintf(os.Stderr, "usage: %s <subject> <plain-text-content> <html-content>", os.Args[0])
+		os.Exit(1)
+	}
+	subject := os.Args[1]
+	plainTextContent := os.Args[2]
+	htmlContent := os.Args[3]
+
 	client, err := sendgrid.New()
 	if err != nil {
-		logrus.WithError(err).Fatal("error creating sendgrid client")
+		fmt.Fprintf(os.Stderr, "error creating sendgrid client: %v", err)
+		os.Exit(2)
 	}
 
 	// create context with cancelation on interrupt signal
@@ -33,8 +43,8 @@ func main() {
 		cancel()
 	}()
 
-	if err := client.SendEmail(ctx, "Test", "This is a test email.", ""); err != nil {
+	if err := client.SendEmail(ctx, subject, plainTextContent, htmlContent); err != nil {
 		_ = sendgrid.LogSendErrorAndGetStatusCode(logrus.StandardLogger(), err)
-		os.Exit(1)
+		os.Exit(3)
 	}
 }
