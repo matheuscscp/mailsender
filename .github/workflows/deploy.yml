@@ -38,6 +38,7 @@ jobs:
           --concurrency=100 \
           --memory=128Mi \
           --cpu=1000m \
+          --set-secrets=SENDGRID_API_KEY=sendgrid-api-key:latest \
           --quiet << EOF
         Y
         EOF
