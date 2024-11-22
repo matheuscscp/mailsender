@@ -12,7 +12,7 @@ import (
 func Verify(ctx context.Context, token string) (string, error) {
 	provider, err := oidc.NewProvider(ctx, "https://token.actions.githubusercontent.com")
 	if err != nil {
-		return "", fmt.Errorf("error creating github actions provider: %w", err)
+		return "", fmt.Errorf("error creating github actions oidc provider: %w", err)
 	}
 
 	oidcToken, err := provider.VerifierContext(ctx, &oidc.Config{ClientID: common.Audience}).Verify(ctx, token)
