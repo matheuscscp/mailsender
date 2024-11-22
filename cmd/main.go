@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/matheuscscp/mailsender/internal/sendgrid"
+	"github.com/matheuscscp/mailsender/internal/providers/sendgrid"
 )
 
 func init() {
