@@ -2,18 +2,21 @@ package auth
 
 import (
 	"context"
-	"errors"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/matheuscscp/mailsender/internal/auth/providers/github"
 )
 
-func Verify(ctx context.Context, token string) (string, error) {
-	for _, verify := range []func(context.Context, string) (string, error){
-		github.Verify,
+func Verify(ctx context.Context, l logrus.FieldLogger, token string) (string, bool) {
+	for provider, verify := range map[string]func(context.Context, string) (string, error){
+		"github": github.Verify,
 	} {
-		if sub, err := verify(ctx, token); err == nil {
-			return sub, nil
+		sub, err := verify(ctx, token)
+		if err == nil {
+			return sub, true
 		}
+		l.WithError(err).WithField("provider", provider).Info("error verifying token with provider")
 	}
-	return "", errors.New("invalid token")
+	return "", false
 }

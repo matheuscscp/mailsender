@@ -37,10 +37,10 @@ func init() {
 		}
 		token := strings.TrimPrefix(authz, "Bearer ")
 
-		sub, err := auth.Verify(ctx, token)
-		if err != nil {
+		sub, ok := auth.Verify(ctx, l, token)
+		if !ok {
 			const msg = "error verifying token"
-			l.WithError(err).Error(msg)
+			l.Error(msg)
 			http.Error(w, msg, http.StatusUnauthorized)
 			return
 		}
