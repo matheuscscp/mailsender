@@ -18,7 +18,7 @@ func init() {
 	client := sendgrid.New()
 
 	functions.HTTP("SendEmail", func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
+		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 		defer cancel()
 
 		var l logrus.FieldLogger = logrus.StandardLogger()
