@@ -15,7 +15,8 @@ func Verify(ctx context.Context, token string) (string, error) {
 		return "", fmt.Errorf("error creating github actions oidc provider: %w", err)
 	}
 
-	oidcToken, err := provider.VerifierContext(ctx, &oidc.Config{ClientID: common.Audience}).Verify(ctx, token)
+	conf := &oidc.Config{ClientID: common.Audience}
+	oidcToken, err := provider.VerifierContext(ctx, conf).Verify(ctx, token)
 	if err != nil {
 		return "", fmt.Errorf("error verifying token as github actions oidc token: %w", err)
 	}

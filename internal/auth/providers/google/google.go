@@ -5,8 +5,6 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-
-	"github.com/matheuscscp/mailsender/internal/auth/common"
 )
 
 func Verify(ctx context.Context, token string) (string, error) {
@@ -15,7 +13,8 @@ func Verify(ctx context.Context, token string) (string, error) {
 		return "", fmt.Errorf("error creating google oidc provider: %w", err)
 	}
 
-	oidcToken, err := provider.VerifierContext(ctx, &oidc.Config{ClientID: common.Audience}).Verify(ctx, token)
+	conf := &oidc.Config{ClientID: "32555940559.apps.googleusercontent.com"}
+	oidcToken, err := provider.VerifierContext(ctx, conf).Verify(ctx, token)
 	if err != nil {
 		return "", fmt.Errorf("error verifying token as google oidc token: %w", err)
 	}
