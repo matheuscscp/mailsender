@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/sirupsen/logrus"
 
+	"github.com/matheuscscp/mailsender/internal/auth"
 	"github.com/matheuscscp/mailsender/internal/providers/sendgrid"
 )
 
@@ -24,7 +26,25 @@ func init() {
 		ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 		defer cancel()
 
-		var l logrus.FieldLogger = logrus.StandardLogger()
+		var l logrus.FieldLogger = logrus.WithField("caller", r.Header.Get("X-Caller"))
+
+		authz := r.Header.Get("Authorization")
+		if !strings.HasPrefix(authz, "Bearer ") {
+			const msg = "missing or invalid authorization header"
+			l.Error(msg)
+			http.Error(w, msg, http.StatusUnauthorized)
+			return
+		}
+		token := strings.TrimPrefix(authz, "Bearer ")
+
+		sub, err := auth.Verify(ctx, token)
+		if err != nil {
+			const msg = "error verifying token"
+			l.WithError(err).Error(msg)
+			http.Error(w, msg, http.StatusUnauthorized)
+			return
+		}
+		l = l.WithField("subject", sub)
 
 		var req struct {
 			Subject          string `json:"subject"`
