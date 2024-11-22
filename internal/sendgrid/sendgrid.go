@@ -29,12 +29,15 @@ var (
 	to   = mail.NewEmail(myName, "matheuscscp@gmail.com")
 )
 
-func New() (*Client, error) {
-	key, err := loadKey()
-	if err != nil {
-		return nil, fmt.Errorf("error loading sendgrid key: %w", err)
+func New() *Client {
+	var key string
+	b, err := os.ReadFile("key.txt")
+	if err == nil {
+		key = string(b)
+	} else {
+		key = os.Getenv("SENDGRID_API_KEY")
 	}
-	return &Client{sg.NewSendClient(key)}, nil
+	return &Client{sg.NewSendClient(key)}
 }
 
 func loadKey() (string, error) {

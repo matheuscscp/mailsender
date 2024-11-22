@@ -18,11 +18,6 @@ func init() {
 }
 
 func main() {
-	client, err := sendgrid.New()
-	if err != nil {
-		logrus.WithError(err).Fatal("error creating client")
-	}
-
 	// create context with cancelation on interrupt signal
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -33,7 +28,7 @@ func main() {
 		cancel()
 	}()
 
-	if err := client.SendEmail(ctx, "Test", "This is a test email.", ""); err != nil {
+	if err := sendgrid.New().SendEmail(ctx, "Test", "This is a test email.", ""); err != nil {
 		_ = sendgrid.LogSendErrorAndGetStatusCode(logrus.StandardLogger(), err)
 		os.Exit(1)
 	}
