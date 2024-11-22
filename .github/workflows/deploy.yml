@@ -34,7 +34,12 @@ jobs:
           --region=europe-west2 \
           --source=. \
           --entry-point=SendEmail \
+          --max-instances=1 \
+          --concurrency=100 \
+          --memory=128Mi \
+          --cpu=1000m \
           --service-account=send-email@mail-sender-442416.iam.gserviceaccount.com \
+          --clear-build-service-account \
           --quiet << EOF
         Y
         EOF
