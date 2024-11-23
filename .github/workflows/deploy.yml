@@ -51,6 +51,4 @@ jobs:
         subject: New version of SendEmail Cloud Function deployed – ${{ github.sha }}
         html: |
           <h4>A new version of the SendEmail Cloud Function was deployed:</h4>
-          <a clicktracking=off href="https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}">
-            https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}
-          </a>
+          <a clicktracking=off href="https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}">https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}</a>
