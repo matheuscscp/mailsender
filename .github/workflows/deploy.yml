@@ -48,8 +48,9 @@ jobs:
       uses: matheuscscp/mailsender/actions/send@main
       with:
         caller: Test SendEmail Cloud Function
-        subject: New version ${{ github.sha }} of SendEmail Cloud Function deployed
-        text: |
-          A new version of the SendEmail Cloud Function was deployed:
-
-          https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}
+        subject: New version of SendEmail Cloud Function deployed – ${{ github.sha }}
+        html: |
+          <h4>A new version of the SendEmail Cloud Function was deployed:</h4>
+          <a clicktracking=off href="https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}">
+            https://github.com/matheuscscp/mailsender/commit/${{ github.sha }}
+          </a>
