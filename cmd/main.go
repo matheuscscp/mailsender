@@ -20,7 +20,7 @@ func init() {
 
 func main() {
 	if len(os.Args) < 4 {
-		fmt.Fprintf(os.Stderr, "usage: %s <subject> <plain-text-content> <html-content>", os.Args[0])
+		fmt.Fprintln(os.Stderr, "usage:\n\n\tgo run github.com/matheuscscp/mailsender/cmd <subject> <plain-text-content> <html-content>")
 		os.Exit(1)
 	}
 	subject := os.Args[1]
@@ -29,7 +29,7 @@ func main() {
 
 	client, err := sendgrid.New()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error creating sendgrid client: %v", err)
+		fmt.Fprintf(os.Stderr, "error creating sendgrid client: %v\n", err)
 		os.Exit(2)
 	}
 
